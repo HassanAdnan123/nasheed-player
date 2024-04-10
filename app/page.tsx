@@ -1,9 +1,34 @@
+"use client";
 import CustomAudio from "@/components/CustomAudio";
+import CustomCard from "@/components/CustomCard";
 import Image from "next/image";
+import { useState } from "react";
 
 export default function Home() {
+  const [darkMode, setDarkMode] = useState(false);
+
+  // Function to toggle dark mode
+  const toggleDarkMode = () => {
+    // Toggle dark mode state
+    setDarkMode((prevMode) => !prevMode);
+  };
+
+  const mainClass = `flex min-h-screen flex-col items-center justify-between p-24 ${
+    darkMode ? "dark:bg-black dark:text-white" : "bg-white text-black"
+  }`;
+
+  // Return JSX content
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
+    <main className={mainClass}>
+      {/* Dark mode toggle button */}
+      <button
+        className={`bg-gray-300 dark:bg-gray-700 text-foreground p-3 rounded-full ${
+          darkMode ? "dark:text-gray-300" : "dark:text-[white]"
+        }`}
+        onClick={toggleDarkMode}
+      >
+        {darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
+      </button>
       {/* Header */}
       <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
         <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
@@ -32,7 +57,8 @@ export default function Home() {
       {/* Music Player Section */}
       <div className="flex flex-col items-center justify-center my-8">
         {/* Your MusicPlayer component */}
-        <CustomAudio/>
+        <CustomAudio />
+        <CustomCard />
       </div>
 
       {/* Footer */}
