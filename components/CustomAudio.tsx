@@ -6,11 +6,17 @@ import {
   faPause,
   faRedo,
   faArrowRight,
+  faForwardStep,
+  faBackwardStep,
 } from "@fortawesome/free-solid-svg-icons";
+import CustomCard from "./CustomCard";
+import { utils } from "@/shared/utils";
 
 const CustomAudio = () => {
-  const musicFile = process.env.MUSIC_FILE_A || "Mountains of Friendship.mp3";
-  const musicFile2 = process.env.MUSIC_FILE_B || "Mountains of Friendship.mp3";
+  const [musicFile, setMusicFile] = useState(process.env.MUSIC_FILE_A || "");
+  const [audioThumbnail, setAudioThumbnail] = useState(
+    process.env.IMAGE_A || ""
+  );
 
   const [isPlaying, setIsPlaying] = useState(true);
 
@@ -28,48 +34,70 @@ const CustomAudio = () => {
     }
   };
 
-  return (
-    <div className="flex flex-col items-center">
-      <audio id="audioPlayer" className="mb-4" controls>
-        <source src={musicFile} type="audio/mpeg" />
-        Your browser does not support the audio element.
-      </audio>
-      <div className="flex items-center justify-center space-x-4">
-        <button
-          className={`text-2xl transition-opacity duration-300`}
-          onClick={togglePlay}
-        >
-          {isPlaying ? (
-            <FontAwesomeIcon
-              icon={faPause}
-              className={`h-8 w-8 ${isPlaying ? "opacity-100" : "opacity-0"}`}
-            />
-          ) : (
-            <FontAwesomeIcon
-              icon={faPlay}
-              className={`h-8 w-8 ${isPlaying ? "opacity-0" : "opacity-100"}`}
-            />
-          )}
-        </button>
-        <button className="text-2xl transition duration-300 ease-in-out transform hover:scale-110">
-          <FontAwesomeIcon icon={faRedo} className="h-8 w-8" />
-        </button>
-        <button
-          className="text-2xl transition duration-300 ease-in-out transform hover:scale-110"
-          onClick={() => {
-            const music = document.getElementById(
-              "audioPlayer"
-            ) as HTMLAudioElement;
-            music.pause();
-            music.src = music.src == musicFile ? musicFile2 : musicFile;
-            music.load();
-            music.play();
-          }}
-        >
-          <FontAwesomeIcon icon={faArrowRight} className="h-8 w-8" />
-        </button>
+  const toggleNext = () => {
+    const music = document.getElementById("audioPlayer") as HTMLAudioElement;
+    music.pause();
+    if (musicFile == process.env.MUSIC_FILE_A) {
+      setMusicFile(process.env.MUSIC_FILE_B || "");
+      setAudioThumbnail(process.env.IMAGE_B || "");
+    } else {
+      setMusicFile(process.env.MUSIC_FILE_A || "");
+      setAudioThumbnail(process.env.IMAGE_A || "");
+    }
+    music.load();
+    music.play();
+  };
+
+  const audioCardUi = () => {
+    return (
+      <div className="flex flex-col items-center">
+        <audio id="audioPlayer" className="mb-4" controls>
+          <source src={musicFile} type="audio/mpeg" />
+          Your browser does not support the audio element.
+        </audio>
+        <div className="flex items-center justify-center space-x-4">
+          <button
+            className="text-2xl transition duration-300 ease-in-out transform hover:scale-110"
+            onClick={toggleNext}
+          >
+            <FontAwesomeIcon icon={faBackwardStep} className="h-8 w-8" />
+          </button>
+          <button
+            className={`text-2xl transition-opacity duration-300`}
+            onClick={togglePlay}
+          >
+            {isPlaying ? (
+              <FontAwesomeIcon
+                icon={faPause}
+                className={`h-8 w-8 ${isPlaying ? "opacity-100" : "opacity-0"}`}
+              />
+            ) : (
+              <FontAwesomeIcon
+                icon={faPlay}
+                className={`h-8 w-8 ${isPlaying ? "opacity-0" : "opacity-100"}`}
+              />
+            )}
+          </button>
+          <button className="text-2xl transition duration-300 ease-in-out transform hover:scale-110">
+            <FontAwesomeIcon icon={faRedo} className="h-8 w-8" />
+          </button>
+          <button
+            className="text-2xl transition duration-300 ease-in-out transform hover:scale-110"
+            onClick={toggleNext}
+          >
+            <FontAwesomeIcon icon={faForwardStep} className="h-8 w-8" />
+          </button>
+        </div>
       </div>
-    </div>
+    );
+  };
+
+  return (
+    <CustomCard
+      title={utils.trimMusicName(musicFile)}
+      imageUrl={audioThumbnail}
+      cardContent={audioCardUi()}
+    />
   );
 };
 
