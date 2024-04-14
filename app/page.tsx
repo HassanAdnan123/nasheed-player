@@ -1,8 +1,12 @@
 "use client";
 import CustomAudio from "@/components/CustomAudio";
-import { faMoon, faPause, faSun } from "@fortawesome/free-solid-svg-icons";
+import { faCloudSun, faMoon } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
+import Image from "next/image";
+import { Inter } from "next/font/google";
+
+const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
   const [darkMode, setDarkMode] = useState(false);
@@ -14,44 +18,34 @@ export default function Home() {
   };
 
   const mainClass = `flex min-h-screen flex-col items-center justify-between p-24 ${
-    darkMode ? "dark:bg-black dark:text-white" : "bg-white text-black"
+    darkMode
+      ? "custom-background-darkmode text-white"
+      : "custom-background text-black"
   }`;
 
   // Return JSX content
   return (
     <main className={mainClass}>
       {/* Header */}
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          NasheedPlayer.io
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By Hassan Adnan
-            {/* <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            /> */}
-          </a>
+      <div className="z-10 max-w-5xl w-full items-center justify-between text-sm lg:flex">
+        <div className="flex flex-row items-center">
+          <Image
+            src={"/logo-transparent.png"}
+            alt="Unable to load image"
+            width={300}
+            height={100}
+            priority
+          />
         </div>
         {/* Dark mode */}
         <div>
           <button
-            className={`bg-gray-300 dark:bg-gray-700 text-foreground p-3 rounded-full ${
+            className={`bg-gray-300 dark:bg-gray-700 text-foreground p-3 rounded-full grid grid-cols-3 grid-flow-col gap-0 ${
               darkMode ? "dark:text-gray-300" : "dark:text-[white]"
             }`}
           >
             <FontAwesomeIcon
-              icon={faSun}
+              icon={faCloudSun}
               className={`h-5 w-8 ${
                 darkMode ? "text-[grey]" : "text-[#FFD43B]"
               }`}
@@ -63,10 +57,6 @@ export default function Home() {
               id="flexSwitchCheckDefault"
               onClick={toggleDarkMode}
             />
-            <label
-              className="inline-block pl-[0.15rem] hover:cursor-pointer"
-              htmlFor="flexSwitchCheckDefault"
-            ></label>
             <FontAwesomeIcon
               icon={faMoon}
               className={`h-5 w-8 ${darkMode ? "text-[white]" : "text-[grey]"}`}
@@ -75,10 +65,8 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Music Player Section */}
       <div className="flex flex-col items-center justify-center my-8">
-        {/* Your MusicPlayer component */}
-        <CustomAudio />
+        <CustomAudio darkMode={darkMode} />
       </div>
 
       {/* Footer */}

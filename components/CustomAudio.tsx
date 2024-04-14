@@ -1,93 +1,46 @@
-"use client";
-import { useState, useEffect } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faPlay,
-  faPause,
-  faRedo,
-  faArrowRight,
-  faForwardStep,
-  faBackwardStep,
-} from "@fortawesome/free-solid-svg-icons";
+import React, { useState, FC, useRef } from "react";
 import CustomCard from "./CustomCard";
 import { utils } from "@/shared/utils";
+import MUSIC_FILES from "@/shared/constants";
+import AudioPlayer from "react-h5-audio-player";
+import "react-h5-audio-player/lib/styles.css";
 
-const CustomAudio = () => {
-  const [musicFile, setMusicFile] = useState(process.env.MUSIC_FILE_A || "");
-  const [audioThumbnail, setAudioThumbnail] = useState(
-    process.env.IMAGE_A || ""
-  );
+export type CustomAudioProps = {
+  darkMode?: boolean;
+};
 
-  const [isPlaying, setIsPlaying] = useState(true);
-
-  useEffect(() => {
-    setIsPlaying(!isPlaying);
-  }, []);
-
-  const togglePlay = () => {
-    setIsPlaying(!isPlaying);
-    const audio = document.getElementById("audioPlayer") as HTMLAudioElement;
-    if (isPlaying) {
-      audio.pause();
-    } else {
-      audio.play();
-    }
-  };
+const CustomAudio: FC<CustomAudioProps> = ({ darkMode = false }) => {
+  const [musicFile, setMusicFile] = useState(MUSIC_FILES[0].file);
+  const [audioThumbnail, setAudioThumbnail] = useState(MUSIC_FILES[0].image);
+  const playerRef = useRef<AudioPlayer>(null);
 
   const toggleNext = () => {
-    const music = document.getElementById("audioPlayer") as HTMLAudioElement;
-    music.pause();
-    if (musicFile == process.env.MUSIC_FILE_A) {
-      setMusicFile(process.env.MUSIC_FILE_B || "");
-      setAudioThumbnail(process.env.IMAGE_B || "");
-    } else {
-      setMusicFile(process.env.MUSIC_FILE_A || "");
-      setAudioThumbnail(process.env.IMAGE_A || "");
+    const audioElement = playerRef.current?.audio?.current;
+    if (audioElement) {
+      audioElement.pause();
+      const currentIndex = MUSIC_FILES.findIndex(
+        (file) => file.file === musicFile
+      );
+      const nextIndex = (currentIndex + 1) % MUSIC_FILES.length;
+
+      setMusicFile(MUSIC_FILES[nextIndex].file);
+      setAudioThumbnail(MUSIC_FILES[nextIndex].image);
     }
-    music.load();
-    music.play();
   };
 
   const audioCardUi = () => {
     return (
       <div className="flex flex-col items-center">
-        <audio id="audioPlayer" className="mb-4" controls>
-          <source src={musicFile} type="audio/mpeg" />
-          Your browser does not support the audio element.
-        </audio>
-        <div className="flex items-center justify-center space-x-4">
-          <button
-            className="text-2xl transition duration-300 ease-in-out transform hover:scale-110"
-            onClick={toggleNext}
-          >
-            <FontAwesomeIcon icon={faBackwardStep} className="h-8 w-8" />
-          </button>
-          <button
-            className={`text-2xl transition-opacity duration-300`}
-            onClick={togglePlay}
-          >
-            {isPlaying ? (
-              <FontAwesomeIcon
-                icon={faPause}
-                className={`h-8 w-8 ${isPlaying ? "opacity-100" : "opacity-0"}`}
-              />
-            ) : (
-              <FontAwesomeIcon
-                icon={faPlay}
-                className={`h-8 w-8 ${isPlaying ? "opacity-0" : "opacity-100"}`}
-              />
-            )}
-          </button>
-          <button className="text-2xl transition duration-300 ease-in-out transform hover:scale-110">
-            <FontAwesomeIcon icon={faRedo} className="h-8 w-8" />
-          </button>
-          <button
-            className="text-2xl transition duration-300 ease-in-out transform hover:scale-110"
-            onClick={toggleNext}
-          >
-            <FontAwesomeIcon icon={faForwardStep} className="h-8 w-8" />
-          </button>
-        </div>
+        <AudioPlayer
+          ref={playerRef}
+          autoPlay
+          src={musicFile}
+          showFilledProgress
+          showJumpControls
+          showSkipControls
+          onClickNext={toggleNext}
+          onClickPrevious={toggleNext}
+        />
       </div>
     );
   };
@@ -97,6 +50,7 @@ const CustomAudio = () => {
       title={utils.trimMusicName(musicFile)}
       imageUrl={audioThumbnail}
       cardContent={audioCardUi()}
+      darkMode={darkMode}
     />
   );
 };
