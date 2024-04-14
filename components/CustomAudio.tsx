@@ -4,6 +4,18 @@ import { utils } from "@/shared/utils";
 import MUSIC_FILES from "@/shared/constants";
 import AudioPlayer from "react-h5-audio-player";
 import "react-h5-audio-player/lib/styles.css";
+import {
+  faBackward,
+  faBackwardStep,
+  faForward,
+  faForwardStep,
+  faPause,
+  faPlay,
+  faRepeat,
+  faVolumeLow,
+  faVolumeMute,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export type CustomAudioProps = {
   darkMode?: boolean;
@@ -40,6 +52,19 @@ const CustomAudio: FC<CustomAudioProps> = ({ darkMode = false }) => {
           showSkipControls
           onClickNext={toggleNext}
           onClickPrevious={toggleNext}
+          customIcons={{
+            play: <FontAwesomeIcon icon={faPlay} />,
+            pause: <FontAwesomeIcon icon={faPause} />,
+            rewind: <FontAwesomeIcon icon={faBackward} />,
+            forward: <FontAwesomeIcon icon={faForward} />,
+            previous: <FontAwesomeIcon icon={faBackwardStep} />,
+            next: <FontAwesomeIcon icon={faForwardStep} />,
+            loop: <FontAwesomeIcon className="text-primary" icon={faRepeat} />,
+            loopOff: <FontAwesomeIcon icon={faRepeat} />,
+            volume: <FontAwesomeIcon icon={faVolumeLow} />,
+            volumeMute: <FontAwesomeIcon icon={faVolumeMute} />,
+          }}
+          className={`custom-audio ${darkMode ? "" : ""}`}
         />
       </div>
     );
@@ -48,9 +73,11 @@ const CustomAudio: FC<CustomAudioProps> = ({ darkMode = false }) => {
   return (
     <CustomCard
       title={utils.trimMusicName(musicFile)}
-      imageUrl={audioThumbnail}
+      coverUrl={audioThumbnail}
       cardContent={audioCardUi()}
       darkMode={darkMode}
+      className="min-w-[40rem] min-h-[20rem]"
+      coverClassName="min-w-[40rem] min-h-[20rem]"
     />
   );
 };

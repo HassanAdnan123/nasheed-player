@@ -12,3 +12,9 @@
     background: url("/background-dark.png");
     background-size: contain;
 } 
+
+
+.custom-audio {
+    background-color: #ffffff00 !important;
+    box-shadow: none !important;
+}
